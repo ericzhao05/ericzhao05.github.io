@@ -3,47 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eric Zhao - Portfolio Home</title>
-    <link rel="stylesheet" href="homeStyle.css">
+    <title>Eric Zhao - Portfolio</title>
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="intro-screen.css">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="parallax-skills.css">
+    <link rel="stylesheet" href="main-content.css">
+    <link rel="stylesheet" href="contact.css">
+    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="responsive.css">
+    <!-- javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-          const hamburger = document.getElementById("hamburger")
-          hamburger.addEventListener("click", toggleMenu)
-        }) 
-        function toggleMenu(){
-          const navigation = document.getElementById("main-nav")
-          navigation.classList.toggle("show")
-        }
-      </script>
+            
+            // Intro screen =======================================================================
+            gsap.to('.arrow', {
+                y: -15,
+                duration: 0.7,
+                repeat: -1, // repeat infinitely
+                yoyo: true, // bounce back and forth
+                ease: "power1.inOut", // ease in and out
+                repeatDelay: 0.1 // delay before repeating
+            })
+            
+            //hide nav bar
+            document.querySelector('header').style.opacity = '0'
+            document.querySelector('header').style.transform = 'translateY(-15px)'
+            let once = false
+            
+            // Show header on first scroll or click
+            document.addEventListener('scroll', function() {
+                if (once === false) {
+                    document.querySelector('header').style.opacity = '1'
+                    document.querySelector('header').style.transform = 'translateY(0)'
+                    once = true
+                }
+            })
+            
+            document.addEventListener('click', function() {
+                if (once === false) {
+                    document.querySelector('header').style.opacity = '1'
+                    document.querySelector('header').style.transform = 'translateY(0)'
+                    once = true
+                }
+            })
+            
+            // Create intro animation timeline
+            const introTimeline = gsap.timeline()
+            
+            introTimeline.to('#intro-name', {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power2.out" 
+            }).to('#scroll-indicator', {
+                opacity: 1,
+                duration: 0.8,
+                ease: "power2.out",
+                delay: 0.3,
+            })
+
+            window.addEventListener('wheel', dismissIntro)
+            window.addEventListener('touchmove', dismissIntro)
+            // window.addEventListener('scroll', dismissIntro)
+            document.getElementById('intro-screen').addEventListener('click', dismissIntro)
+            
+            // Simple function to dismiss intro screen
+            function dismissIntro() {
+                window.removeEventListener('wheel', dismissIntro)
+                window.removeEventListener('click', dismissIntro)
+                window.removeEventListener('touchmove', dismissIntro)
+                
+                // Animate intro screen away
+                gsap.to('#intro-screen', {
+                    y: -5000,
+                    duration: 3,
+                    ease: "power2.inOut",
+                    onComplete: function() {
+                        initializeMainPage()
+                    }
+                })
+            }
+            // End intro screen =======================================================================
+            
+            // hamburger menu for mobile ==============================================================
+            const hamburger = document.getElementById("hamburger")
+            hamburger.addEventListener("click", toggleMenu)
+            function toggleMenu(){
+                const navigation = document.getElementById("main-nav")
+                navigation.classList.toggle("show")
+            }
+            // End hamburger menu for mobile ==========================================================
+
+            // Initialize main page and the elevator buttons in the nav bar
+            function initializeMainPage() {
+                const homeNavLink = document.getElementById('homeNavLink')
+                const projectsNavLink = document.getElementById('projectsNavLink')
+                const contactNavLink = document.getElementById('contactNavLink')
+                
+             
+                let navLinks = [
+                    document.getElementById('homeNavLink'),
+                    document.getElementById('projectsNavLink'),
+                    document.getElementById('contactNavLink')
+                ]
+                
+                homeNavLink.setAttribute(
+                    'data-scrollpos',
+                    document.querySelector('#home').getBoundingClientRect().top + window.scrollY
+                )
+                
+                projectsNavLink.setAttribute(
+                    'data-scrollpos',
+                    document.querySelector('#projects').getBoundingClientRect().top + window.scrollY
+                )
+                
+                contactNavLink.setAttribute(   
+                    'data-scrollpos',
+                    document.querySelector('#contact').getBoundingClientRect().top + window.scrollY
+                )
+                
+                // Handle navigation link clicks for smooth scrolling
+                navLinks.forEach((link) => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault()
+                        
+                        const myScrollPos = this.getAttribute('data-scrollpos')
+                        // console.log('POSITION', myScrollPos)
+                        gsap.to(window, {
+                            scrollTo: myScrollPos,
+                            duration: 2,
+                            ease: 'power2.out'
+                        })
+                        
+                        // remove the show class from the main nav when on a 
+                        document.getElementById("main-nav").classList.remove("show")
+                    })
+                })
+                
+                //highlight active section on scroll
+                document.addEventListener('scroll', function() {
+                    const sections = document.querySelectorAll('.section')
+                    const scrollPosition = window.scrollY
+                    
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 100
+                        const sectionHeight = section.offsetHeight
+                        const sectionId = section.getAttribute('id')
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                            navLinks.forEach(link => {
+                                link.classList.remove('active')
+                            })
+                            
+                            if (sectionId === 'home') {
+                                homeNavLink.classList.add('active')
+                            } else if (sectionId === 'projects') {
+                                projectsNavLink.classList.add('active')
+                            } else if (sectionId === 'contact') {
+                                contactNavLink.classList.add('active')
+                            }
+                        }
+                    })
+                })
+            }
+
+        
+            
+            // Skills parallax function ==================================================
+
+            gsap.registerPlugin(ScrollTrigger)
+
+            const container = document.querySelector('.parallax-container')
+            const parallaxItems = document.querySelector('.parallax-items')
+            parallaxItems.innerHTML = ''
+            
+            // Define skills with positions that keep them in the upper portion
+            const skills = [
+                { img: 'img-skills/PythonLogoPS.png', title: 'Python', speed: 0.9, left: '25%', top: '30%' },
+                { img: 'img-skills/pytorch.png', title: 'PyTorch', speed: 0.5, left: '70%', top: '12%' },
+                { img: 'img-skills/Numpy.png', title: 'NumPy', speed: 0.2, left: '15%', top: '30%' },
+                { img: 'img-skills/C++LogoPS.png', title: 'C++', speed: 0.6, left: '85%', top: '35%' },
+                { img: 'img-skills/DatabaseLogo.png', title: 'Database', speed: 0.35, left: '35%', top: '50%' },
+                { img: 'img-skills/WebDevLogo.png', title: 'Web Dev', speed: 0.45, left: '65%', top: '45%' },
+                { img: 'img-skills/ComputerVision.png', title: 'Computer Vision', speed: 0.25, left: '40%', top: '25%' },
+                { img: 'img-skills/NLP.png', title: 'NLP', speed: 0.55, left: '60%', top: '55%' },
+                { img: 'img-skills/Flask.png', title: 'Flask', speed: 0.4, left: '22%', top: '42%' },
+                { img: 'img-skills/node-js.png', title: 'Node.js', speed: 0.35, left: '80%', top: '20%' },
+                { img: 'img-skills/react.png', title: 'React', speed: 0.45, left: '50%', top: '40%' }
+            ]
+            
+            //create skill elements
+            skills.forEach(skill => {
+                const item = document.createElement('div')
+                item.className = 'parallax-item'
+                item.setAttribute('data-speed', skill.speed)
+
+                const img = document.createElement('img')
+                img.src = skill.img
+                img.alt = skill.title
+                img.style.width = '100px'
+                img.style.height = '100px'
+                img.style.objectFit = 'contain'
+
+                const title = document.createElement('h4')
+                title.textContent = skill.title
+                title.style.color = '#4dabf7'
+                title.style.marginTop = '10px'
+                title.style.fontSize = '1.2rem'
+
+                item.appendChild(img)
+                item.appendChild(title)
+                parallaxItems.appendChild(item)
+
+                // Initial position setup
+                item.style.left = skill.left
+                item.style.top = skill.top
+                item.style.textAlign = 'center'
+            })
+
+            const items = document.querySelectorAll('.parallax-item')
+
+            items.forEach(item => {
+                const speed = parseFloat(item.getAttribute('data-speed'))
+
+                gsap.to(item, {
+                    y: 1000 * speed, 
+                    ease: "none", // No easing: the animation will move at a constant speed.
+                    scrollTrigger: {
+                        trigger: container, // The element that will trigger the animation.
+                        start: "top bottom", // Animation starts when the top of the .parallax-container hits the bottom of the viewport.
+                        end: "bottom top", // Animation ends when the bottom of the .parallax-container hits the top of the viewport.
+                        scrub: true // Smooth scrolling effect: the animation progress is tied directly to the scroll position.
+                    }
+                })
+            })
+        })
+    </script>
 </head>
 <body>
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="intro-screen">
+        <h1 id="intro-name" class="intro-name">Eric Zhao</h1>
+        <div id="scroll-indicator" class="scroll-indicator">
+            <p>Scroll or Click to Continue</p>
+            <span class="arrow">↓</span>
+        </div>
+    </div>
+    
+    <!-- Navigation Bar -->
     <header>
-        <h2>Eric Zhao</h2>
+        <h1>Eric Zhao</h1>
         <span class="mobile-menu" id="hamburger">&#8801;</span>
         <nav id="main-nav">
             <ul class="menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="https://drive.google.com/file/d/1AMB4tWfkt0U2uTyfDkwm6OASvQaEMwry/view?usp=sharing" target="_blank">Resume</a></li>
+                <li><a href="#home" id="homeNavLink">Home</a></li>
+                <li><a href="https://drive.google.com/file/d/1M-ihgS4cD1CvZKA-XHvsOI9V1WynMjpI/view?usp=sharing" target="_blank">Resume</a></li>
                 <li><a href="https://github.com/ericzhao05" target="_blank">GitHub</a></li>
                 <li><a href="https://www.linkedin.com/in/eric-zhao-142b6523a/" target="_blank">LinkedIn</a></li>
-                <li><a href="project.html">Projects</a></li>
-                <li><a href="contact.html">My Contact</a></li>
+                <li><a href="#projects" id="projectsNavLink">Projects</a></li>
+                <li><a href="#contact" id="contactNavLink">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <h1>Home</h1>
-        <div class="content-container">
-            <div class="left-column">
+    <!-- Home Section -->
+    <section id="home" class="section">
+        <div class="container">
+            <h2>Home</h2>
+            <div class="home-centered">
                 <div class="my-pic">
-                    <img src="img/EricZhaoHeadshot.jpg" alt="Picture of myself">
+                    <img src="./img/EricZhaoHeadshot.jpg" alt="Picture of myself">
                 </div>
-            </div>
-            
-            <div class="right-column">
                 <div class="my-description">
-                    <h2>Short Description about me</h2>
+                    <h2>About Me</h2>
                     <p>
                         My name is Eric Zhao. 
                         I was born and raised in Italy and come from a Chinese background. 
@@ -52,31 +290,189 @@
                     </p>
                 </div>
             </div>
-        </div>
-        
-        <div class="skill-container">
-            <h2>Skill Sets</h2>
-            <div class="skill-item">
-                <h3>Python</h3>
-                <img src="img/PythonLogoPS.png" />
-                <p>Numpy / Pytorch / Pandas</p>
-            </div>
-            <div class="skill-item">
-                <h3>C++</h3>
-                <img src="img/C++LogoPS.png" />
-                <p>OOP / GameDev</p>
-            </div>
-            <div class="skill-item">
-                <h3>WebDev</h3>
-                <img src="img/WebDevLogo.png" />
-                <p>HTML CSS Javascript</p>
-            </div>
-            <div class="skill-item">
-                <h3>Database</h3>
-                <img src="img/DatabaseLogo.png" />
-                <p>MySQL</p>
+            
+            <!-- Skills section with parallax effect -->
+            <div class="parallax-container">
+                <div class="skills-heading-wrapper">
+                    <h3 class="skills-heading">SKILL SET</h3>
+                </div>
+                <div class="parallax-items">
+                    <!-- Skills will be dynamically added here by JavaScript -->
+                </div>
             </div>
         </div>
-    <main>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projects</h2>
+            <!-- Horizontal scrolling projects gallery -->
+            <div class="projects-gallery">
+                <div class="scroll-actions">
+                    <button class="scroll-btn prev-btn" aria-label="Previous Project">&#8592;</button>
+                    <button class="scroll-btn next-btn" aria-label="Next Project">&#8594;</button>
+                </div>
+                <ul class="project-cards">
+                    <!-- Project 1 -->
+                    <li>
+                        <h3>EzDSViewer</h3>
+                        <div class="project-summary">
+                            <p>A tool for visualizing and analyzing datasets in a user-friendly interface.</p>
+                        </div>
+                        <div class="project-features">
+                            <div class="feature">
+                                <h4>Full Stack Web Application</h4>
+                                <p>
+                                    - Developed a full-stack data structure visualization tool using React.js and Flask, demonstrating proficiency in modern front-end and back-end development.<br>
+                                    - Built RESTful API endpoints in Flask to interface directly with Python-based data structures.<br>
+                                    - Designed an interactive UI in React.js with light/dark mode toggling and smooth animations.<br>
+                                    - Engineered responsive visualizations using CSS animations to depict real-time push/pop operations.<br>
+                                    - Implemented a light/dark mode toggle to enhance user experience and accessibility.
+                                </p>
+                                <img src="./img/EzDSViewer-DarkMode.png" alt="EzDSViewer Dark Mode">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Project 2 -->
+                    <li>
+                        <h3>Portfolio Website</h3>
+                        <div class="project-summary">
+                            <p>A responsive personal portfolio website showcasing my skills and projects with modern animations and interactive UI elements.</p>
+                        </div>
+                        <div class="project-features">
+                            <div class="feature">
+                                <h4>Animations with GSAP</h4>
+                                <p>
+                                    - Utilized GSAP for smooth animations and transitions to enhance user experience.<br>
+                                    - Designed UI/UX with a clean layout, intuitive navigation, and responsive design.
+                                </p>
+                                <img src="./img/projectSection.png" alt="Website Design">
+                            </div>
+                            <div class="feature">
+                                <h4>Skills Section</h4>
+                                <p>
+                                    - Implemented a parallax effect to the skills section to enhance user experience.
+                                </p>
+                                <img src="./img/SkillSection.png" alt="Website Animations">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Project 3 -->
+                    <li>
+                        <h3>PVP Game Development</h3>
+                        <div class="project-summary">
+                            <p>A player VS player game developed using Object-Oriented Programming in C++.</p>
+                        </div>
+                        <div class="project-features">
+                            <div class="feature">
+                                <h4>Real-time Calculations</h4>
+                                <p>Utilizes C++ and OpenGL to perform high-performance physics calculations in real-time.</p>
+                                <img src="./img/GameDesert.png" alt="Physics Calculations">
+                            </div>
+                            <div class="feature">
+                                <h4>Interactive Controls</h4>
+                                <p>Features a user-friendly interface that allows adjustment of environmental parameters like gravity and friction.</p>
+                                <img src="./img/GameSpace.png" alt="Interactive Controls">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Project 4 -->
+                    <li>
+                        <h3>Machine Learning Model</h3>
+                        <div class="project-summary">
+                            <p>An image classification system trained on diverse datasets to recognize and categorize objects with high accuracy.</p>
+                        </div>
+                        <div class="project-features">
+                            <div class="feature">
+                                <h4>Neural Network</h4>
+                                <p>
+                                    - Multi-layer convolutional neural network architecture for feature extraction and classification.<br>
+                                    - Trained on diverse datasets to recognize and categorize objects with high accuracy.
+                                </p>
+                                <img src="./img-skills/ComputerVision.png" alt="Computer Vision">
+                            </div>
+                        </div>
+                    </li>
+                    <!-- Project 5 -->
+                    <li>
+                        <h3>Mobile Game App</h3>
+                        <div class="project-summary">
+                            <p>An engaging puzzle game for mobile platforms featuring procedurally generated levels and progression system.</p>
+                        </div>
+                        <div class="project-features">
+                            <div class="feature">
+                                <h4>Level Generation</h4>
+                                <p>Algorithm for creating unique, balanced puzzles with increasing difficulty and complexity.</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+   
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Contact</h2>
+            <div class="contact-container">
+                <div class="contact-left">
+                    <img src="./img/nyc-skyline.jpg" alt="Image of NYC">
+                </div>
+                
+                <div class="contact-right">
+                    <div class="contact-info">
+                        <h3>Contact Me Through the Following Methods</h3>
+                        <ul>
+                            <li>Github: <a href="https://github.com/ericzhao05" target="_blank">ericzhao05</a></li>
+                            <li>Email: ez2346@nyu.edu</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="contact-form-section">
+                        <h2>Send a message</h2>
+                        
+                        <form class="contact-form" action="https://formspree.io/f/xgvaelky" method="POST">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company-name">Company Name</label>
+                                <input type="text" name="company-name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job-title">Job Title</label>
+                                <input type="text" name="job-title">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea name="message" rows="5" placeholder="Leave a comment or question here." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">Send</button>
+                            <input name="subject" type="hidden" value="New Message from {{name}}, {{job-title}} at {{company-name}}" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Eric Zhao</p>
+    </footer>
+    
+    <!-- Custom scrolling script -->
+    <script src="scrolling.js"></script>
 </body>
-</html>
+</html> 

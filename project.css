@@ -1,0 +1,144 @@
+/* Override main container width limit for the projects section */
+#projects .container {
+  max-width: 100vw;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+.projects-gallery {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.project-cards {
+  position: absolute;
+  width: 100vw;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.project-cards li {
+  list-style: none;
+  padding: 25px;
+  margin: 0;
+  width: 700px;
+  height: 700px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center center;
+  border-radius: 15px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.3s ease;
+  will-change: transform, opacity, scale;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.project-cards li h3 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: #4dabf7;
+  text-align: center;
+}
+
+.project-cards li .project-summary {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.project-cards li .project-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 0.5rem;
+  flex: 1;
+}
+
+.project-cards li .feature {
+  flex: 1 1 calc(33.333% - 10px);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  overflow: hidden;
+}
+
+.project-cards li .feature h4 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #4dabf7;
+}
+
+.project-cards li .feature p {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.project-cards li .feature img {
+  width: 100%;
+  height: auto;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+.scroll-actions {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.scroll-btn {
+  background: #4dabf7;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+  pointer-events: auto;
+  opacity: 0.6;
+}
+
+.prev-btn {
+  margin-left: 40px;
+}
+
+.next-btn {
+  margin-right: 40px;
+}
+
+.scroll-btn:hover {
+  background: #1c7ed6;
+  opacity: 1;
+}

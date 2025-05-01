@@ -1,0 +1,71 @@
+/* Header Styles */
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #333;
+    background-color: #222;
+}
+
+header h2 {
+    margin: 0;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+}
+
+.menu li {
+    min-width: 0.8rem;
+    position: relative;
+}
+
+.menu li a {
+    display: block;
+    margin: 10px;
+    position: relative;
+}
+
+.menu li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #4dabf7;
+    transition: width 0.3s ease;
+}
+
+.menu li a:hover,
+.menu li a.active {
+    color: #4dabf7;
+    
+} 
+
+.menu li a:hover::after,
+.menu li a.active::after {
+    width: 100%;
+}
+
