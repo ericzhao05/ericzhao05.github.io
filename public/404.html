@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Eric Zhao</title>
+    <!-- GitHub Pages SPA deep-link fallback: stash the requested path and bounce
+         to the app root, where the router restores it (spec §1). -->
+    <script>
+      sessionStorage.setItem(
+        "spa-redirect",
+        location.pathname + location.search + location.hash
+      );
+      location.replace("/");
+    </script>
+  </head>
+  <body></body>
+</html>

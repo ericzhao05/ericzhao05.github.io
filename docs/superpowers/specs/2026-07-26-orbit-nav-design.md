@@ -46,7 +46,7 @@ green would collapse them, which is the cliché the spec §5 locks out).
 
 | Token             | Hex       | Role                                                        |
 |-------------------|-----------|-------------------------------------------------------------|
-| `ink`             | `#05100A` | Green-black sky background                                  |
+| `ink`             | `#000000` | Pure-black sky background (owner preference, 2026-07-27)    |
 | `phosphor`        | `#00FF66` | Systems layer: HUD, telemetry, dev panel, star rim, glow   |
 | `phosphor-dim`    | `#1C7A44` | Muted telemetry / secondary green                          |
 | `lapis`           | `#2E4EA4` | Resume star                                                 |
@@ -83,6 +83,17 @@ single-page fly-to feel consistent across all six stars.
 
 **Resume.** Self-hosted `resume.pdf` in the repo; the `/resume` overlay links to /
 embeds it. Replaceable without code changes.
+
+**Orbit orientation (owner change, 2026-07-27).** The single "tilt from edge-on"
+control was replaced with three independent plane rotations (tiltX/tiltY/tiltZ)
+so the owner can aim the orbit plane freely. Default tiltX=25 reproduces the
+baseline face-crossing ellipse.
+
+**Depth scale (owner change, 2026-07-27).** A `depthScale` dev slider adds an
+explicit front-bigger/back-smaller multiplier on top of the perspective effect.
+This intentionally deviates from spec §2/§11 ("no manual depth multiplier"), at
+the owner's request. It defaults to 0 so the shipped/default look remains pure
+perspective; the owner can dial in extra drama by feel.
 
 **Earth surface markers.** No personal-location markers. The lat/lon →
 equirectangular machinery from spec §7 is retained **only** as a dev-only
